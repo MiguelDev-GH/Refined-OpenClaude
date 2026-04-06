@@ -42,39 +42,40 @@ function paintLine(text: string, stops: RGB[], lineT: number): string {
 
 // ─── Colors ───────────────────────────────────────────────────────────────────
 
-const SUNSET_GRAD: RGB[] = [
-  [255, 180, 100],
-  [240, 140, 80],
-  [217, 119, 87],
-  [193, 95, 60],
-  [160, 75, 55],
-  [130, 60, 50],
+// Azul petróleo — do mais claro (topo do logo) ao mais escuro (base)
+const TEAL_GRAD: RGB[] = [
+  [100, 210, 230],   // #64D2E6 — ciano claro, linha 1
+  [ 40, 170, 200],   // #28AAC8
+  [  0, 140, 170],   // #008CAA
+  [  0, 103, 120],   // #006778 — ACCENT
+  [  0,  75,  95],   // #004B5F
+  [ 10,  50,  70],   // #0A3246 — base escura
 ]
 
-const ACCENT: RGB = [240, 148, 100]
-const CREAM: RGB = [220, 195, 170]
-const DIMCOL: RGB = [120, 100, 82]
-const BORDER: RGB = [100, 80, 65]
+const ACCENT: RGB = [0, 103, 120]
+const CREAM: RGB = [210, 225, 230]
+const DIMCOL: RGB = [40, 65, 75]
+const BORDER: RGB = [20, 40, 50]
 
 // ─── Filled Block Text Logo ───────────────────────────────────────────────────
 
-const LOGO_OPEN = [
-  `  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2557  \u2588\u2588\u2557`,
-  `  \u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2551 \u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2551 \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u2550\u255d \u2588\u2588\u2588\u2557 \u2588\u2588\u2551`,
-  `  \u2588\u2588\u2551   \u2588\u2588\u2551 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551 \u2588\u2588\u2588\u2588\u2588\u2588\u2557   \u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551`,
-  `  \u2588\u2588\u2551   \u2588\u2588\u2551 \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u2550\u255d \u2588\u2588\u2554\u2550\u2550\u2550\u255d   \u2588\u2588\u2554\u2588\u2588\u2588\u2588\u2551`,
-  `  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551 \u2588\u2588\u2551       \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2551 \u255a\u2588\u2588\u2588\u2551`,
-  `  \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u255d       \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u255d  \u255a\u2550\u2550\u255d`,
-]
+const LOGO_REFINED = [
+  `  ████████╗ ████████╗ ████████╗ ██╗ ██╗   ██╗ ████████╗ ████████╗`,
+  `  ██╔═══██║ ██╔═════╝ ██╔═════╝ ██║ ████╗ ██║ ██╔═════╝ ██╔═══██║`,
+  `  ████████║ ███████╗  ███████╗  ██║ ██╔██╗██║ ███████╗  ██║   ██║`,
+  `  ██╔══██╗  ██╔═══╝   ██╔═══╝   ██║ ██║╚████║ ██╔═══╝   ██║   ██║`,
+  `  ██║  ╚██╗ ████████╗ ██║       ██║ ██║ ╚███║ ████████╗ ████████║`,
+  `  ╚═╝   ╚═╝ ╚═══════╝ ╚═╝       ╚═╝ ╚═╝  ╚══╝ ╚═══════╝ ╚═══════╝`,
+];
 
 const LOGO_CLAUDE = [
-  `  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2557      \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2557   \u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557`,
-  `  \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u2550\u255d \u2588\u2588\u2551      \u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2551 \u2588\u2588\u2551   \u2588\u2588\u2551 \u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2551 \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u2550\u255d`,
-  `  \u2588\u2588\u2551       \u2588\u2588\u2551      \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551 \u2588\u2588\u2551   \u2588\u2588\u2551 \u2588\u2588\u2551   \u2588\u2588\u2551 \u2588\u2588\u2588\u2588\u2588\u2588\u2557  `,
-  `  \u2588\u2588\u2551       \u2588\u2588\u2551      \u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2551 \u2588\u2588\u2551   \u2588\u2588\u2551 \u2588\u2588\u2551   \u2588\u2588\u2551 \u2588\u2588\u2554\u2550\u2550\u2550\u255d  `,
-  `  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551   \u2588\u2588\u2551 \u255a\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255d \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557`,
-  `  \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\u255a\u2550\u255d   \u255a\u2550\u255d  \u255a\u2550\u2550\u2550\u2550\u2550\u255d  \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d`,
-]
+  `  ████████╗ ██╗      ████████╗ ██╗   ██╗ ████████╗ ████████╗`,
+  `  ██╔═════╝ ██║      ██╔═══██║ ██║   ██║ ██╔═══██║ ██╔═════╝`,
+  `  ██║       ██║      ████████║ ██║   ██║ ██║   ██║ ███████╗ `,
+  `  ██║       ██║      ██╔═══██║ ██║   ██║ ██║   ██║ ██╔═══╝  `,
+  `  ████████╗ ████████╗██║   ██║ ╚██████╔╝ ████████║ ████████╗`,
+  `  ╚═══════╝ ╚═══════╝╚═╝   ╚═╝  ╚═════╝  ╚═══════╝ ╚═══════╝`,
+];
 
 // ─── Provider detection ───────────────────────────────────────────────────────
 
@@ -101,17 +102,17 @@ function detectProvider(): { name: string; model: string; baseUrl: string; isLoc
     const baseUrl = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'
     const isLocal = /localhost|127\.0\.0\.1|0\.0\.0\.0/.test(baseUrl)
     let name = 'OpenAI'
-    if (/deepseek/i.test(baseUrl) || /deepseek/i.test(rawModel))       name = 'DeepSeek'
-    else if (/openrouter/i.test(baseUrl))                             name = 'OpenRouter'
-    else if (/together/i.test(baseUrl))                               name = 'Together AI'
-    else if (/groq/i.test(baseUrl))                                   name = 'Groq'
-    else if (/mistral/i.test(baseUrl) || /mistral/i.test(rawModel))     name = 'Mistral'
-    else if (/azure/i.test(baseUrl))                                  name = 'Azure OpenAI'
-    else if (/localhost:11434/i.test(baseUrl))                        name = 'Ollama'
-    else if (/localhost:1234/i.test(baseUrl))                         name = 'LM Studio'
-    else if (/llama/i.test(rawModel))                                    name = 'Meta Llama'
-    else if (isLocal)                                                  name = 'Local'
-    
+    if (/deepseek/i.test(baseUrl) || /deepseek/i.test(rawModel)) name = 'DeepSeek'
+    else if (/openrouter/i.test(baseUrl)) name = 'OpenRouter'
+    else if (/together/i.test(baseUrl)) name = 'Together AI'
+    else if (/groq/i.test(baseUrl)) name = 'Groq'
+    else if (/mistral/i.test(baseUrl) || /mistral/i.test(rawModel)) name = 'Mistral'
+    else if (/azure/i.test(baseUrl)) name = 'Azure OpenAI'
+    else if (/localhost:11434/i.test(baseUrl)) name = 'Ollama'
+    else if (/localhost:1234/i.test(baseUrl)) name = 'LM Studio'
+    else if (/llama/i.test(rawModel)) name = 'Meta Llama'
+    else if (isLocal) name = 'Local'
+
     // Resolve model alias to actual model name + reasoning effort
     let displayModel = rawModel
     const codexAliases: Record<string, { model: string; reasoningEffort?: string }> = {
@@ -134,7 +135,7 @@ function detectProvider(): { name: string; model: string; baseUrl: string; isLoc
         displayModel = `${displayModel} (${resolved.reasoningEffort})`
       }
     }
-    
+
     return { name, model: displayModel, baseUrl, isLocal }
   }
 
@@ -163,14 +164,14 @@ export function printStartupScreen(): void {
   out.push('')
 
   // Gradient logo
-  const allLogo = [...LOGO_OPEN, '', ...LOGO_CLAUDE]
+  const allLogo = [...LOGO_REFINED, '', ...LOGO_CLAUDE]
   const total = allLogo.length
   for (let i = 0; i < total; i++) {
     const t = total > 1 ? i / (total - 1) : 0
     if (allLogo[i] === '') {
       out.push('')
     } else {
-      out.push(paintLine(allLogo[i], SUNSET_GRAD, t))
+      out.push(paintLine(allLogo[i], TEAL_GRAD, t))
     }
   }
 
@@ -191,10 +192,10 @@ export function printStartupScreen(): void {
   const provC: RGB = p.isLocal ? [130, 175, 130] : ACCENT
   let [r, l] = lbl('Provider', p.name, provC)
   out.push(boxRow(r, W, l))
-  ;[r, l] = lbl('Model', p.model)
+    ;[r, l] = lbl('Model', p.model)
   out.push(boxRow(r, W, l))
   const ep = p.baseUrl.length > 38 ? p.baseUrl.slice(0, 35) + '...' : p.baseUrl
-  ;[r, l] = lbl('Endpoint', ep)
+    ;[r, l] = lbl('Endpoint', ep)
   out.push(boxRow(r, W, l))
 
   out.push(`${rgb(...BORDER)}\u2560${'\u2550'.repeat(W - 2)}\u2563${RESET}`)
@@ -206,7 +207,7 @@ export function printStartupScreen(): void {
   out.push(boxRow(sRow, W, sLen))
 
   out.push(`${rgb(...BORDER)}\u255a${'\u2550'.repeat(W - 2)}\u255d${RESET}`)
-  out.push(`  ${DIM}${rgb(...DIMCOL)}openclaude ${RESET}${rgb(...ACCENT)}v${MACRO.DISPLAY_VERSION ?? MACRO.VERSION}${RESET}`)
+  out.push(`  ${DIM}${rgb(...DIMCOL)}refined claude ${RESET}${rgb(...ACCENT)}v${MACRO.DISPLAY_VERSION ?? MACRO.VERSION}${RESET}`)
   out.push('')
 
   process.stdout.write(out.join('\n') + '\n')

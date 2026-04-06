@@ -88,14 +88,14 @@ export function CondensedLogo() {
   }
   let t5;
   if ($[8] === Symbol.for("react.memo_cache_sentinel")) {
-    t5 = <Text bold={true}>OPEN CLAUDE</Text>;
+    t5 = <Text bold={true} color="rgb(0, 103, 120)">REFINED CLAUDE</Text>;
     $[8] = t5;
   } else {
     t5 = $[8];
   }
   let t6;
   if ($[9] !== truncatedVersion) {
-    t6 = <Text>{t5} <Text dimColor={true}>v{truncatedVersion}</Text></Text>;
+    t6 = <Text>{t5} <Text color="rgb(40, 65, 75)">v{truncatedVersion}</Text></Text>;
     $[9] = truncatedVersion;
     $[10] = t6;
   } else {
@@ -141,7 +141,26 @@ export function CondensedLogo() {
   }
   let t12;
   if ($[23] !== t10 || $[24] !== t11 || $[25] !== t6 || $[26] !== t7 || $[27] !== t9) {
-    t12 = <OffscreenFreeze><Box borderStyle="round" borderColor="inactive" paddingX={2} paddingY={0} flexDirection="row" gap={2} alignItems="center"><Box flexDirection="column" alignItems="center"><Text color="inactive">•</Text>{t4}<Text color="inactive">•</Text></Box><Box flexDirection="column"><Text bold={true}>OPEN CLAUDE</Text><Text dimColor={true}>{t6a}</Text><Box marginTop={1}>{t6}</Box>{t7}{t9}{t10}{t11}</Box></Box></OffscreenFreeze>;
+    t12 = <OffscreenFreeze>
+      <Box borderStyle="round" borderColor="rgb(20, 40, 50)" paddingX={2} paddingY={0} flexDirection="row" gap={2} alignItems="center">
+        <Box flexDirection="column" alignItems="center">
+          <Text color="rgb(40, 65, 75)">•</Text>
+          {t4}
+          <Text color="rgb(40, 65, 75)">•</Text>
+        </Box>
+        <Box flexDirection="column">
+          {/* Título principal em Azul Petróleo */}
+          <Text bold={true} color="rgb(0, 103, 120)">REFINED CLAUDE</Text>
+          {/* Texto secundário em tom CREAM/Claro */}
+          <Text color="rgb(210, 225, 230)">{t6a}</Text>
+          <Box marginTop={1}>{t6}</Box>
+          {t7}
+          {t9}
+          {t10}
+          {t11}
+        </Box>
+      </Box>
+    </OffscreenFreeze>;
     $[23] = t10;
     $[24] = t11;
     $[25] = t6;
