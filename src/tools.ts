@@ -83,6 +83,15 @@ import { TaskCreateTool } from './tools/TaskCreateTool/TaskCreateTool.js'
 import { TaskGetTool } from './tools/TaskGetTool/TaskGetTool.js'
 import { TaskUpdateTool } from './tools/TaskUpdateTool/TaskUpdateTool.js'
 import { TaskListTool } from './tools/TaskListTool/TaskListTool.js'
+// Custom optimization tools — Progressive Disclosure & Code Quality
+import { WorkspaceContextTool } from './tools/WorkspaceContextTool/WorkspaceContextTool.js'
+import { IntentAlignmentTool } from './tools/IntentAlignmentTool/IntentAlignmentTool.js'
+import { TypeCheckerTool } from './tools/TypeCheckerTool/TypeCheckerTool.js'
+import { TDDValidationTool } from './tools/TDDValidationTool/TDDValidationTool.js'
+import { BlastRadiusTool } from './tools/BlastRadiusTool/BlastRadiusTool.js'
+import { AtomicSyncTool } from './tools/AtomicSyncTool/AtomicSyncTool.js'
+import { ArchitectureEnforcementTool } from './tools/ArchitectureEnforcementTool/ArchitectureEnforcementTool.js'
+import { CodeSmellDetectorTool } from './tools/CodeSmellDetectorTool/CodeSmellDetectorTool.js'
 import uniqBy from 'lodash-es/uniqBy.js'
 import { isToolSearchEnabledOptimistic } from './utils/toolSearch.js'
 import { isTodoV2Enabled } from './utils/tasks.js'
@@ -247,6 +256,17 @@ export function getAllBaseTools(): Tools {
     // Include ToolSearchTool when tool search might be enabled (optimistic check)
     // The actual decision to defer tools happens at request time in claude.ts
     ...(isToolSearchEnabledOptimistic() ? [ToolSearchTool] : []),
+    // Custom optimization tools (Progressive Disclosure + Code Quality)
+    // WorkspaceContextTool: alwaysLoad = true — pre-flight stack analysis before coding
+    WorkspaceContextTool,
+    // Remaining tools use shouldDefer = true — loaded on demand via ToolSearchTool
+    IntentAlignmentTool,
+    TypeCheckerTool,
+    TDDValidationTool,
+    BlastRadiusTool,
+    AtomicSyncTool,
+    ArchitectureEnforcementTool,
+    CodeSmellDetectorTool,
   ]
 }
 

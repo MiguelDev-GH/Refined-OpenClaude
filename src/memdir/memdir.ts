@@ -25,6 +25,7 @@ import { getProjectDir } from '../utils/sessionStorage.js'
 import { getInitialSettings } from '../utils/settings/settings.js'
 import {
   MEMORY_FRONTMATTER_EXAMPLE,
+  STRICT_WRITE_DISCIPLINE_SECTION,
   TRUSTING_RECALL_SECTION,
   TYPES_SECTION_INDIVIDUAL,
   WHAT_NOT_TO_SAVE_SECTION,
@@ -257,6 +258,10 @@ export function buildMemoryLines(
     '- When to use or update tasks instead of memory: When you need to break your work in current conversation into discrete steps or keep track of your progress use tasks instead of saving to memory. Tasks are great for persisting information about the work that needs to be done in the current conversation, but memory should be reserved for information that will be useful in future conversations.',
     '',
     ...(extraGuidelines ?? []),
+    '',
+    // Strict Write Discipline: enforce two-step write+verify protocol before indexing
+    // Prevents phantom pointers in MEMORY.md caused by premature index updates
+    ...STRICT_WRITE_DISCIPLINE_SECTION,
     '',
   ]
 

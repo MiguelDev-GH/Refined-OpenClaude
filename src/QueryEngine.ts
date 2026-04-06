@@ -286,20 +286,38 @@ export class QueryEngine {
     // Narrow once so TS tracks the type through the conditionals below.
     const customPrompt =
       typeof customSystemPrompt === 'string' ? customSystemPrompt : undefined
-    const {
-      defaultSystemPrompt,
-      userContext: baseUserContext,
-      systemContext,
-    } = await fetchSystemPromptParts({
-      tools,
-      mainLoopModel: initialMainLoopModel,
-      additionalWorkingDirectories: Array.from(
-        initialAppState.toolPermissionContext.additionalWorkingDirectories.keys(),
-      ),
-      mcpClients,
-      customSystemPrompt: customPrompt,
-    })
+
+    // [OPTIMIZATION] Parallelize fetchSystemPromptParts and loadMemoryPrompt.
+    // Both are pure I/O operations with no shared mutable state.
+    // loadMemoryPrompt is short-circuited to null when the condition is false,
+    // so the Promise.all has zero overhead in the common (non-cowork-override) case.
+    // fetchSystemPromptParts reads tools/MCP config; loadMemoryPrompt reads disk.
+    // They are fully independent — safe to run concurrently.
+    const [
+      { defaultSystemPrompt, userContext: baseUserContext, systemContext },
+      memoryMechanicsPrompt,
+    ] = await Promise.all([
+      fetchSystemPromptParts({
+        tools,
+        mainLoopModel: initialMainLoopModel,
+        additionalWorkingDirectories: Array.from(
+          initialAppState.toolPermissionContext.additionalWorkingDirectories.keys(),
+        ),
+        mcpClients,
+        customSystemPrompt: customPrompt,
+      }),
+      // When an SDK caller provides a custom system prompt AND has set
+      // CLAUDE_COWORK_MEMORY_PATH_OVERRIDE, inject the memory-mechanics prompt.
+      // The env var is an explicit opt-in signal — the caller has wired up
+      // a memory directory and needs Claude to know how to use it (which
+      // Write/Edit tools to call, MEMORY.md filename, loading semantics).
+      // The caller can layer their own policy text via appendSystemPrompt.
+      customPrompt !== undefined && hasAutoMemPathOverride()
+        ? loadMemoryPrompt()
+        : Promise.resolve(null),
+    ])
     headlessProfilerCheckpoint('after_getSystemPrompt')
+
     const userContext = {
       ...baseUserContext,
       ...getCoordinatorUserContext(
@@ -307,17 +325,6 @@ export class QueryEngine {
         isScratchpadEnabled() ? getScratchpadDir() : undefined,
       ),
     }
-
-    // When an SDK caller provides a custom system prompt AND has set
-    // CLAUDE_COWORK_MEMORY_PATH_OVERRIDE, inject the memory-mechanics prompt.
-    // The env var is an explicit opt-in signal — the caller has wired up
-    // a memory directory and needs Claude to know how to use it (which
-    // Write/Edit tools to call, MEMORY.md filename, loading semantics).
-    // The caller can layer their own policy text via appendSystemPrompt.
-    const memoryMechanicsPrompt =
-      customPrompt !== undefined && hasAutoMemPathOverride()
-        ? await loadMemoryPrompt()
-        : null
 
     const systemPrompt = asSystemPrompt([
       ...(customPrompt !== undefined ? [customPrompt] : defaultSystemPrompt),

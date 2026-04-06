@@ -269,3 +269,36 @@ export const MEMORY_FRONTMATTER_EXAMPLE: readonly string[] = [
   '{{memory content — for feedback/project types, structure as: rule/fact, then **Why:** and **How to apply:** lines}}',
   '```',
 ]
+
+/**
+ * Strict Write Discipline instructions.
+ *
+ * Injected into buildMemoryLines() to prevent crystallization of broken pointers
+ * in the MEMORY.md index — caused when a model adds a pointer before confirming
+ * the backing file was successfully written.
+ *
+ * This section enforces a mandatory two-step commit protocol for memory creation.
+ */
+export const STRICT_WRITE_DISCIPLINE_SECTION: readonly string[] = [
+  '## Strict Write Discipline for MEMORY.md',
+  '',
+  'Follow this exact two-step protocol when creating a new memory. Do NOT shortcut it.',
+  '',
+  '**Step 1 — Write the file first:**',
+  '- Use the Write tool to create the memory file (e.g., `user_role.md`) with valid YAML frontmatter.',
+  '- The frontmatter MUST include all three required fields: `name`, `description`, and `type`.',
+  '- `type` must be one of: user, feedback, project, reference.',
+  '',
+  '**Step 2 — Verify, then index:**',
+  '- After the Write tool returns, confirm the file exists and is non-empty (use a Read or Glob if uncertain).',
+  '- Only AFTER confirming the file exists should you append its pointer to `MEMORY.md`.',
+  '- NEVER add a pointer to `MEMORY.md` before the backing file is confirmed written.',
+  '',
+  '**Why this matters:**',
+  '- An index pointer without a backing file creates a phantom entry — future sessions will try to load a non-existent file and may hallucinate its contents.',
+  '- The two-step protocol is lightweight: 1 Write + 1 verification + 1 MEMORY.md append.',
+  '',
+  '**If a write fails:**',
+  '- Do not add the pointer to `MEMORY.md`. Retry the write or notify the user.',
+  '- Do not create a pointer and note "file will be created later" — the index must always reflect reality.',
+]
