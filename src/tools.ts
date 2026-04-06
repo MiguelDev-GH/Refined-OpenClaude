@@ -92,6 +92,7 @@ import { BlastRadiusTool } from './tools/BlastRadiusTool/BlastRadiusTool.js'
 import { AtomicSyncTool } from './tools/AtomicSyncTool/AtomicSyncTool.js'
 import { ArchitectureEnforcementTool } from './tools/ArchitectureEnforcementTool/ArchitectureEnforcementTool.js'
 import { CodeSmellDetectorTool } from './tools/CodeSmellDetectorTool/CodeSmellDetectorTool.js'
+import { ArchitectureVisualizerTool } from './tools/ArchitectureVisualizerTool/ArchitectureVisualizerTool.js'
 import uniqBy from 'lodash-es/uniqBy.js'
 import { isToolSearchEnabledOptimistic } from './utils/toolSearch.js'
 import { isTodoV2Enabled } from './utils/tasks.js'
@@ -267,6 +268,8 @@ export function getAllBaseTools(): Tools {
     AtomicSyncTool,
     ArchitectureEnforcementTool,
     CodeSmellDetectorTool,
+    // AST-based architecture diagram generator (shouldDefer=true, zero startup cost)
+    ArchitectureVisualizerTool,
   ]
 }
 

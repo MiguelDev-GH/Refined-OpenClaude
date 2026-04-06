@@ -82,6 +82,14 @@ import {
   shouldEnableThinkingByDefault,
   type ThinkingConfig,
 } from './utils/thinking.js'
+import {
+  makeHealingState,
+  shouldRetry,
+  recordAttempt,
+  buildFeedbackMessage,
+  isToolErrorMessage,
+  type HealingState,
+} from './utils/selfHealing.js'
 
 // Lazy: MessageSelector.tsx pulls React/ink; only needed for message filtering at query time
 /* eslint-disable @typescript-eslint/no-require-imports */
@@ -197,6 +205,7 @@ export class QueryEngine {
   // many turns in SDK mode.
   private discoveredSkillNames = new Set<string>()
   private loadedNestedMemoryPaths = new Set<string>()
+  private healingState: HealingState = makeHealingState()
 
   constructor(config: QueryEngineConfig) {
     this.config = config
@@ -237,6 +246,7 @@ export class QueryEngine {
     } = this.config
 
     this.discoveredSkillNames.clear()
+    this.healingState = makeHealingState()
     setCwd(cwd)
     const persistSession = !isSessionPersistenceDisabled()
     const startTime = Date.now()
@@ -803,6 +813,24 @@ export class QueryEngine {
           yield* normalizeMessage(message)
           break
         case 'user':
+          // Self-healing circuit breaker: intercept tool errors before surfacing to SDK.
+          // Bounded at MAX_SELF_HEALING_RETRIES (3) — on exhaustion falls through normally.
+          // KAIROS / USER_TYPE / MCP guards are not referenced here.
+          {
+            const errInfo = isToolErrorMessage(message)
+            if (errInfo !== false && shouldRetry(this.healingState, errInfo.toolUseId)) {
+              recordAttempt(this.healingState, errInfo.toolUseId)
+              const feedbackMsg = buildFeedbackMessage(
+                errInfo.toolUseId,
+                errInfo.errorText,
+              )
+              // Inject diagnostic feedback into the mutable conversation so the LLM
+              // can self-correct on the next query() iteration.
+              this.mutableMessages.push(feedbackMsg)
+              // Do not yield this error to the SDK caller — let the loop continue.
+              break
+            }
+          }
           this.mutableMessages.push(message)
           yield* normalizeMessage(message)
           break
